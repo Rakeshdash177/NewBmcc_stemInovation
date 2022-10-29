@@ -1,5 +1,6 @@
 #include<iostream>
 #include<fstream>
+#include<string>
 
 using namespace std;
 
@@ -17,10 +18,20 @@ public:
         firstName = lastName = " ";
         studentId = 0;
         studentAddress = " ";
-        studentEmail = " ";
+        studentEmail = "";
         major = " ";
         gender = ' ';
         password= " ";
+    }
+    Student operator=(const Student &obj){
+        this->firstName = obj.firstName;
+        this->lastName = obj.lastName;
+        this->studentId = obj.studentId;
+        this->studentEmail = obj.studentEmail;
+        this->major = obj.major;
+        this->gender = obj.gender;
+        this->password = obj.password;
+        return *this;
     }
     void setStudentFirstName(string fname){firstName = fname;}
     string getStudentFirstName()const{return firstName;}
@@ -28,11 +39,10 @@ public:
     string getStudentLastName()const{return lastName;}
     void setStudentId(int stuId){studentId = stuId;}
     int getStudentId()const{return studentId;}
-    void setStudentEmailId(string email){studentEmail = email;}
+    void setStudentEmailId(string &email){studentEmail = email;}
     string getStudentEmailId()const{ return studentEmail;}
-    void setStudentMajor(string Ymajor){
-        major = Ymajor;
-    }
+    void setStudentMajor(string Ymajor){major = Ymajor;}
+    
     string getStudentMajor()const{return major;}
     void setStudentAdress(string adress){studentAddress =  adress;}
     string getStudentAdress()const {return studentAddress;}
@@ -201,7 +211,7 @@ public:
             }
             else{
                 cout << "Welcome!!!\n";
-                cout << "Student name: " << temp.getHostFirstName() << " " << temp.getHostLastName() << endl;
+                cout << temp.getHostFirstName() << " " << temp.getHostLastName() << endl;
             }
         }
     }
@@ -314,16 +324,17 @@ public:
             while(renter.getStudentEmailId() !=userName && !renterFile.eof()){
                 renterFile.read(reinterpret_cast<char*>(&renter), sizeof(Student));
             }
-            temp = renter;
-            if(temp.getStudentEmailId() == " "){
+            //temp = renter;
+            if(renter.getStudentEmailId() == " "){
                 cout << "UserId can not found\n";
             }
-            else if(temp.getPassword() !=password){
+            else if(renter.getPassword() !=password){
                 cout << "Your password doesnot match\n";
             }
             else{
                 cout << "Welcome!!!\n";
-                cout << "Student name: " << temp.getStudentFirstName() << " " << temp.getStudentLastName() << endl;
+                cout  << renter.getStudentFirstName() << " " << temp.getStudentLastName() << endl;
+                
             }
         }
             
@@ -410,35 +421,73 @@ void showRentProperty(){
 
 
 int main(){
+    
     Student_Query student;
     Host_Query host;
-    int response, hostOrRenter;
+    int response, hostOrRenter, option;
     char isRegister;
     string password, userName;
     
-    cout << "Are you Registered?(Y for yes/ N for No)  ";
-    cin >> isRegister;
-    if(isRegister == 'Y' | isRegister == 'y'){
-        cout << "Please select one of the following(1 for Renter/ 2 for Host): ";
-        cin >> response;
-        if(response == 1){
-            student.CheckStudentRecord();
+    do{
+        cout << "Choose one from Below\n";
+        cout << "1.Property List\n";
+        cout << "2.View listed Propery\n";
+        cout << "3.Create Account\n";
+        cout << "4.Renter List(person looking for Rent)\n";
+        cout << "5.Exit\n";
+        cout << "Enter your response please: ";
+        cin >> option;
+        if(option == 1){
+            listProperty();
+        }
+        else if(option == 2){
+            showRentProperty();
+        }
+        else if(option == 3){
+            cout << "Are you Registered?(Y for yes/ N for No)  ";
+            cin >> isRegister;
+            if(isRegister == 'Y' | isRegister == 'y'){
+                cout << "Please select one of the following(1 for Renter/ 2 for Host): ";
+                cin >> response;
+                if(response == 1){
+                    student.CheckStudentRecord();
+                }
+                else{
+                    host.checkHostRecord();
+                }
+            }
+            else{
+                cout << "Do you wanna register as host or Renter(1 for Renter/ 2 for Host): ";
+                cin >> hostOrRenter;
+                if(hostOrRenter == 1){
+                    student.addRecord();
+                }
+                else{
+                    host.addHostRecord();
+                }
+            }
+        }
+        else if(option == 4){
+            student.show_rec();
+        }
+        else if(option ==5 ){
+            EXIT_SUCCESS;
         }
         else{
-            host.checkHostRecord();
+            cout << "Wrong Input\n";
         }
-    }
-    else{
-        cout << "Do you wanna register as host or Renter(1 for Renter/ 2 for Host): ";
-        cin >> hostOrRenter;
-        if(hostOrRenter == 1){
-            student.addRecord();
-        }
-        else{
-            host.addHostRecord();
-        }
-    }
+        
+       
+    }while(option != 5);
+    
+    
+    
+    
+    
    
+    
+    
+    
     return 0;
 }
 
